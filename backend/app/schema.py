@@ -99,3 +99,11 @@ def schema_to_text(schema: dict) -> str:
 
 def schema_for_ui(schema: dict) -> list[dict]:
     return [{"name": t, "columns": cols} for t, cols in schema["tables"].items()]
+
+
+def select_tables(schema: dict, tables: list[str] | None) -> dict:
+    """Return only explicitly selected existing tables; empty means all tables."""
+    if not tables:
+        return schema
+    selected = set(tables)
+    return {"tables": {name: cols for name, cols in schema["tables"].items() if name in selected}}

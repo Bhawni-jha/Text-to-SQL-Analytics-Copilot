@@ -5,7 +5,7 @@ from typing import Any
 from .config import settings
 from .llm import generate_sql
 from .runner import QueryError, run_query
-from .schema import get_schema, schema_to_text
+from .schema import get_schema, schema_to_text, select_tables
 from .validator import SQLValidationError, validate_sql
 
 
@@ -22,9 +22,9 @@ class Outcome:
     error: str | None = None
 
 
-def answer_question(question: str) -> Outcome:
+def answer_question(question: str, selected_tables: list[str] | None = None) -> Outcome:
     """question -> SQL -> validate -> run. On failure, retry once with the error message."""
-    schema_text = schema_to_text(get_schema())
+    schema_text = schema_to_text(select_tables(get_schema(), selected_tables))
     last_sql: str | None = None
     error: str | None = None
     explanation = ""

@@ -14,13 +14,13 @@ export default function QuestionBox({ value, onChange, onSubmit, loading }) {
   }
 
   return (
-    <section className="card">
+    <section className="card question-card">
       <label className="label" htmlFor="question">
         Ask a question about your data
       </label>
       <textarea
         id="question"
-        rows={3}
+        rows={2}
         value={value}
         placeholder="For example: Which employee handled the most orders?"
         onChange={(e) => onChange(e.target.value)}
@@ -44,7 +44,10 @@ export default function QuestionBox({ value, onChange, onSubmit, loading }) {
           {loading ? "Thinking…" : "Ask question"}
         </button>
       </div>
-      <p className="hint">Tip: press Ctrl + Enter to send.</p>
+      <div className="question-footer">
+        <p className="hint">Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to send</p>
+        <span className="secure-note"><span className="secure-dot" /> Read-only queries</span>
+      </div>
     </section>
   );
 }

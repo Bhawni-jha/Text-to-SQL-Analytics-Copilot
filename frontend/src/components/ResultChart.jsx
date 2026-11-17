@@ -12,7 +12,14 @@ import {
   YAxis,
 } from "recharts";
 
-const COLORS = ["#2f6fed", "#e8572a", "#16a085", "#8e44ad", "#f39c12", "#34495e"];
+const COLORS = [
+  "hsl(220 78% 57%)",
+  "hsl(280 55% 56%)",
+  "hsl(340 68% 52%)",
+  "hsl(40 72% 48%)",
+  "hsl(100 48% 42%)",
+  "hsl(160 68% 36%)",
+];
 
 export default function ResultChart({ chart }) {
   const [kind, setKind] = useState(chart.defaultKind);
@@ -20,7 +27,7 @@ export default function ResultChart({ chart }) {
 
   return (
     <div>
-      <div className="row">
+      <div className="row chart-controls">
         <button type="button" className={`btn small ${kind === "bar" ? "primary" : ""}`} onClick={() => setKind("bar")}>
           Bar
         </button>

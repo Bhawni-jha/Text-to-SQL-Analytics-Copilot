@@ -16,6 +16,8 @@ class Settings:
     # 2 = first try + one retry with the error message sent back to the model
     max_attempts: int = int(os.getenv("MAX_ATTEMPTS", "2"))
     cors_origins: tuple = ("http://localhost:5173", "http://127.0.0.1:5173")
+    auth_secret: str = os.getenv("AUTH_SECRET", "change-me-in-production")
+    session_ttl_seconds: int = int(os.getenv("SESSION_TTL_SECONDS", "604800"))
 
 
 settings = Settings()

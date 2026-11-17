@@ -77,7 +77,10 @@ python tests/test_validator.py   # safety checks
 python tests/run_eval.py         # accuracy on 15 questions
 ```
 
-## Next steps
-- Grow `tests/eval_set.json` to 30-50 questions, record accuracy before and after each prompt change.
-- Add table selection for big schemas (send only relevant tables).
-- Add login, saved dashboards, and connect your own database.
+## Included workflows
+- `tests/eval_set.json` contains 30 evaluation questions. Run `python tests/run_eval.py` to measure accuracy and inspect `tests/eval_results.json`.
+- Select a smaller set of tables in the **Data scope** panel before asking a question. This sends less schema context to the model.
+- Create a local account from the **Sign in** menu to keep history separate and save reusable dashboard questions.
+- Use **Connect a database** to test a PostgreSQL URL. Credentials are tested for the request and are not stored.
+
+For local authentication, add a long random `AUTH_SECRET` to `backend/.env`; the default development value must not be used in production.
