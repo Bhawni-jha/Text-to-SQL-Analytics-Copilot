@@ -3,6 +3,9 @@
 Ask a question in plain English. The app writes a SQL query, checks it is safe, runs it on
 PostgreSQL (Northwind sample data) and shows the SQL, a table and a chart.
 
+Full beginner-friendly documentation is available in
+[docs/PROJECT_DOCUMENTATION.md](docs/PROJECT_DOCUMENTATION.md).
+
 ```
 React (Vite)  ->  FastAPI  ->  Groq (writes SQL)
                      |-> SQL validator (sqlglot: one read-only SELECT only)

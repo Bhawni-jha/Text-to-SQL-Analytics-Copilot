@@ -1,0 +1,2144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>
+      Text-to-SQL Analytics Copilot: ask your database in plain English
+    </title>
+    <meta
+      name="description"
+      content="A beginner-friendly guide to the Text-to-SQL Analytics Copilot: how it turns English questions into safe SQL, with the Northwind database schema and live demos."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;600;700&family=Sora:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --card: #fff;
+        --soft: #eef1fb;
+        --alt: #eceffa;
+        --hl: #fff4ec;
+        --bd: #141b34;
+        --shadow: #141b34;
+        --navbg: rgba(246, 247, 251, 0.92);
+        --ink: #141b34;
+        --mut: #5a6385;
+        --blue: #3766e8;
+        --or: #f0742e;
+        --bg: #f6f7fb;
+        --line: #d9deec;
+        --ok: #12a594;
+        --bad: #d64545;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 70px;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font:
+          16px/1.65 "Plus Jakarta Sans",
+          system-ui,
+          sans-serif;
+      }
+      h1,
+      h2,
+      h3 {
+        font-family: Sora, "Plus Jakarta Sans", sans-serif;
+        line-height: 1.15;
+        margin: 0;
+      }
+      code,
+      pre,
+      .sql {
+        font-family: "JetBrains Mono", Consolas, monospace;
+      }
+      a {
+        color: var(--blue);
+      }
+      p {
+        margin: 0 0 10px;
+      }
+      .wrap {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+      section {
+        padding: 76px 0;
+      }
+      .alt {
+        background: var(--alt);
+      }
+      .skip {
+        position: absolute;
+        left: -999px;
+      }
+      .skip:focus {
+        left: 10px;
+        top: 10px;
+        background: var(--card);
+        padding: 8px;
+        z-index: 9;
+      }
+      .eyebrow {
+        color: var(--or);
+        font-weight: 700;
+        font-size: 13px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin: 0;
+      }
+      h2 {
+        font-size: clamp(26px, 4vw, 38px);
+        margin: 8px 0 12px;
+      }
+      h3 {
+        font-size: 19px;
+        margin-bottom: 8px;
+      }
+      .sub {
+        margin: 36px 0 8px;
+      }
+      .lead {
+        color: var(--mut);
+        max-width: 700px;
+        font-size: 17px;
+      }
+      .tiny {
+        font-size: 13px;
+        color: var(--mut);
+      }
+      .card {
+        background: var(--card);
+        border: 2px solid var(--bd);
+        border-radius: 14px;
+        box-shadow: 5px 5px 0 var(--shadow);
+        padding: 20px;
+      }
+      .hl {
+        background: var(--card) 4ec;
+      }
+      .btn {
+        display: inline-block;
+        padding: 11px 20px;
+        border: 2px solid var(--bd);
+        border-radius: 999px;
+        font: 700 15px inherit;
+        font-family: inherit;
+        text-decoration: none;
+        color: var(--ink);
+        background: var(--card);
+        cursor: pointer;
+      }
+      .btn.pri {
+        background: var(--blue);
+        color: #fff;
+        box-shadow: 3px 3px 0 var(--shadow);
+      }
+      .btn.sm {
+        padding: 6px 14px;
+        font-size: 14px;
+      }
+      :focus-visible {
+        outline: 3px solid var(--or);
+        outline-offset: 2px;
+      }
+      .nav {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: var(--navbg);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--line);
+      }
+      .nav-in {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        height: 60px;
+      }
+      .logo {
+        font:
+          800 18px Sora,
+          sans-serif;
+        color: var(--ink);
+        text-decoration: none;
+      }
+      .logo span {
+        color: var(--blue);
+      }
+      .links {
+        display: flex;
+        gap: 18px;
+        margin-left: auto;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+      .links a {
+        color: var(--ink);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+      }
+      .hero {
+        padding: 64px 0 76px;
+        background:
+          linear-gradient(var(--line) 1px, transparent 1px) 0 0/100% 32px,
+          linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0/32px 100%,
+          var(--bg);
+      }
+      .hero-in {
+        display: grid;
+        grid-template-columns: 1.1fr 1fr;
+        gap: 40px;
+        align-items: center;
+      }
+      h1 {
+        font-size: clamp(34px, 5vw, 54px);
+        margin: 10px 0 16px;
+      }
+      h1 em {
+        font-style: normal;
+        color: var(--blue);
+        background: linear-gradient(transparent 62%, #ffd9c2 62%);
+      }
+      .cta {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin: 22px 0;
+      }
+      .stats {
+        display: flex;
+        gap: 22px;
+        flex-wrap: wrap;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        color: var(--mut);
+        font-size: 14px;
+      }
+      .stats b {
+        font:
+          800 24px Sora,
+          sans-serif;
+        color: var(--ink);
+        margin-right: 4px;
+      }
+      .mock {
+        min-height: 360px;
+      }
+      .mock-bar {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      .mock-bar i {
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: var(--line);
+      }
+      .mock-bar span {
+        margin-left: auto;
+        font-size: 12px;
+        color: var(--ok);
+        font-weight: 700;
+      }
+      .mock label {
+        display: block;
+        margin: 10px 0 4px;
+      }
+      .mock-q {
+        border: 2px solid var(--line);
+        border-radius: 10px;
+        padding: 10px 12px;
+        min-height: 46px;
+        font-weight: 600;
+      }
+      .mock-q::after {
+        content: "|";
+        color: var(--or);
+        animation: b 1s steps(1) infinite;
+      }
+      @keyframes b {
+        50% {
+          opacity: 0;
+        }
+      }
+      .sql {
+        background: #10172e;
+        color: #e6ecff;
+        border-radius: 10px;
+        padding: 14px;
+        font-size: 13px;
+        line-height: 1.6;
+        overflow: auto;
+        margin: 0;
+        white-space: pre;
+      }
+      .sql .k {
+        color: #ffb27a;
+        font-weight: 600;
+      }
+      .sql .n {
+        color: #8fd3ff;
+      }
+      .sql.big {
+        font-size: 15px;
+        padding: 20px;
+      }
+      .sql [data-t] {
+        cursor: help;
+        border-bottom: 1px dashed #8a97c9;
+      }
+      .sql [data-t]:hover,
+      .sql [data-t]:focus {
+        background: #2a3a78;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        margin-top: 10px;
+      }
+      th,
+      td {
+        padding: 7px 10px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+      }
+      th {
+        background: var(--soft);
+      }
+      td.r {
+        text-align: right;
+      }
+      .how {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 24px;
+        margin: 28px 0;
+      }
+      .step-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .step-list button {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        text-align: left;
+        padding: 10px 12px;
+        border: 2px solid var(--line);
+        border-radius: 12px;
+        background: var(--card);
+        font: 600 15px inherit;
+        font-family: inherit;
+        cursor: pointer;
+      }
+      .step-list button b {
+        display: grid;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: var(--line);
+        flex: none;
+        font-size: 13px;
+      }
+      .step-list button[aria-selected="true"] {
+        border-color: var(--ink);
+        box-shadow: 3px 3px 0 var(--shadow);
+      }
+      .step-list button[aria-selected="true"] b {
+        background: var(--blue);
+        color: #fff;
+      }
+      .step-card h3 {
+        font-size: 24px;
+      }
+      .file {
+        display: inline-block;
+        margin-top: 8px;
+        background: var(--soft);
+        border-radius: 6px;
+        padding: 2px 8px;
+        font:
+          13px "JetBrains Mono",
+          monospace;
+      }
+      .two,
+      .three {
+        display: grid;
+        gap: 20px;
+      }
+      .two {
+        grid-template-columns: 1fr 1fr;
+      }
+      .three {
+        grid-template-columns: repeat(3, 1fr);
+        margin: 24px 0;
+      }
+      .num {
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--or);
+        color: #fff;
+        margin-bottom: 8px;
+      }
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 20px 0;
+      }
+      .chip {
+        padding: 8px 14px;
+        border: 2px solid var(--bd);
+        border-radius: 999px;
+        background: var(--card);
+        font: 600 14px inherit;
+        font-family: inherit;
+        cursor: pointer;
+      }
+      .chip[aria-pressed="true"] {
+        background: var(--blue);
+        color: #fff;
+      }
+      .demo {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 16px;
+      }
+      .why {
+        margin-top: 10px;
+        color: var(--mut);
+        font-size: 14px;
+      }
+      .tabs {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 8px;
+      }
+      .tabs .tiny {
+        margin-left: auto;
+      }
+      .chart-box {
+        position: relative;
+        height: 280px;
+      }
+      textarea {
+        width: 100%;
+        border: 2px solid var(--bd);
+        border-radius: 10px;
+        padding: 10px;
+        font:
+          13px "JetBrains Mono",
+          monospace;
+        margin: 8px 0;
+      }
+      .result {
+        margin-top: 12px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        font-weight: 600;
+        min-height: 44px;
+      }
+      .result.ok {
+        background: #e0f6f2;
+        color: #0b6b5f;
+      }
+      .result.bad {
+        background: #fdeaea;
+        color: #9b2222;
+      }
+      .schema {
+        padding: 12px;
+        overflow-x: auto;
+        margin: 24px 0;
+      }
+      .schema svg {
+        min-width: 820px;
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+      .tb {
+        cursor: pointer;
+      }
+      .tb rect.b {
+        fill: var(--card);
+        stroke: var(--bd);
+        stroke-width: 2;
+      }
+      .tb rect.h {
+        fill: var(--blue);
+      }
+      .tb text {
+        font:
+          12.5px "JetBrains Mono",
+          monospace;
+        fill: var(--ink);
+      }
+      .tb .t {
+        fill: #fff;
+        font-weight: 600;
+        font-size: 14px;
+      }
+      .tb .pk {
+        fill: var(--or);
+        font-weight: 700;
+      }
+      .tb .fk {
+        fill: var(--blue);
+        font-weight: 700;
+      }
+      .tb:hover rect.b,
+      .tb.sel rect.b {
+        stroke: var(--or);
+        stroke-width: 3;
+      }
+      .dim {
+        opacity: 0.25;
+      }
+      .ln {
+        fill: none;
+        stroke: #8e99c0;
+        stroke-width: 2;
+      }
+      .ln.on {
+        stroke: var(--or);
+        stroke-width: 3;
+      }
+      .lb {
+        font:
+          12px "JetBrains Mono",
+          monospace;
+        fill: var(--mut);
+      }
+      .card_n {
+        font-weight: 700;
+        fill: var(--or);
+      }
+      .panel h3 {
+        font-size: 22px;
+      }
+      .cols {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 10px 0;
+      }
+      .cols span {
+        background: var(--soft);
+        border-radius: 8px;
+        padding: 3px 10px;
+        font:
+          13px "JetBrains Mono",
+          monospace;
+      }
+      .cols b {
+        color: var(--or);
+        margin-right: 4px;
+      }
+      .terms,
+      .feat {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+        gap: 14px;
+        margin-top: 20px;
+      }
+      .terms div,
+      .feat div {
+        background: var(--card);
+        border: 2px solid var(--line);
+        border-radius: 12px;
+        padding: 14px;
+      }
+      .terms b,
+      .feat b {
+        display: block;
+        color: var(--blue);
+      }
+      .setup {
+        padding-left: 20px;
+      }
+      .setup li {
+        margin-bottom: 18px;
+      }
+      .setup pre {
+        position: relative;
+        background: #10172e;
+        color: #e6ecff;
+        border-radius: 10px;
+        padding: 14px;
+        font-size: 13px;
+        overflow: auto;
+        margin: 8px 0;
+        cursor: copy;
+      }
+      .setup pre.copied::after {
+        content: "Copied";
+        position: absolute;
+        right: 10px;
+        top: 8px;
+        color: #7be0c3;
+        font-size: 12px;
+      }
+      details {
+        background: var(--card);
+        border: 2px solid var(--line);
+        border-radius: 12px;
+        padding: 12px 16px;
+        margin-bottom: 10px;
+      }
+      summary {
+        font-weight: 700;
+        cursor: pointer;
+      }
+      details p {
+        margin: 8px 0 0;
+        color: var(--mut);
+      }
+      footer {
+        padding: 36px 0;
+        border-top: 1px solid var(--line);
+        text-align: center;
+      }
+      @media (max-width: 860px) {
+        .hero-in,
+        .how,
+        .two,
+        .three,
+        .demo {
+          grid-template-columns: 1fr;
+        }
+        .links {
+          display: none;
+        }
+        section {
+          padding: 56px 0;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        .mock-q::after {
+          animation: none;
+        }
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --ink: #e8ecfb;
+          --mut: #a3adcf;
+          --bg: #0e1426;
+          --line: #2a3558;
+          --card: #18203a;
+          --soft: #222c4d;
+          --alt: #121a31;
+          --hl: #2b2236;
+          --bd: #6f7fb8;
+          --shadow: #05080f;
+          --navbg: rgba(14, 20, 38, 0.92);
+          --blue: #4f78f0;
+        }
+        .result.ok {
+          background: #12352f;
+          color: #7be0c3;
+        }
+        .result.bad {
+          background: #3b1d22;
+          color: #ff9a9a;
+        }
+        h1 em {
+          background: linear-gradient(transparent 62%, #5a3320 62%);
+        }
+      }
+      .step-list button,
+      .chip {
+        color: var(--ink);
+      }
+      .chip[aria-pressed="true"] {
+        color: #fff;
+      }
+      textarea {
+        background: var(--card);
+        color: var(--ink);
+      }
+      :root {
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+      html {
+        scroll-padding-top: calc(70px + env(safe-area-inset-top, 0px));
+      }
+      .nav {
+        top: env(safe-area-inset-top, 0px);
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0 0 auto;
+        height: env(safe-area-inset-top, 0px);
+        background: var(--navbg);
+        z-index: 11;
+        backdrop-filter: blur(8px);
+      }
+      .guide-s {
+        padding: 0 0 10px;
+        margin-top: -34px;
+        position: relative;
+      }
+      .guide {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 14px;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .guide a {
+        display: block;
+        height: 100%;
+        padding: 14px;
+        background: var(--card);
+        border: 2px solid var(--bd);
+        border-radius: 14px;
+        box-shadow: 4px 4px 0 var(--shadow);
+        text-decoration: none;
+        color: var(--ink);
+        font-weight: 700;
+      }
+      .guide a:hover {
+        transform: translateY(-2px);
+      }
+      .guide b {
+        display: inline-grid;
+        place-items: center;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: var(--or);
+        color: #fff;
+        margin-right: 8px;
+        font-size: 13px;
+      }
+      .guide span {
+        display: block;
+        margin-top: 4px;
+        font-weight: 400;
+        font-size: 13px;
+        color: var(--mut);
+      }
+      .tw {
+        overflow-x: auto;
+        background: var(--card);
+        border: 2px solid var(--line);
+        border-radius: 12px;
+      }
+      .tw table {
+        margin: 0;
+        min-width: 520px;
+      }
+      .tw td:first-child {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12.5px;
+        color: var(--blue);
+        font-weight: 600;
+      }
+      .cmd {
+        position: relative;
+        background: #10172e;
+        color: #e6ecff;
+        border-radius: 10px;
+        padding: 14px;
+        font-size: 13px;
+        overflow: auto;
+        margin: 8px 0;
+        cursor: copy;
+        font-family: "JetBrains Mono", Consolas, monospace;
+      }
+      .cmd.copied::after {
+        content: "Copied";
+        position: absolute;
+        right: 10px;
+        top: 8px;
+        color: #7be0c3;
+        font-size: 12px;
+      }
+      .list {
+        padding-left: 20px;
+        color: var(--mut);
+      }
+      .list li {
+        margin-bottom: 6px;
+      }
+      .list b {
+        color: var(--ink);
+      }
+      @media (max-width: 860px) {
+        .guide {
+          grid-template-columns: 1fr 1fr;
+        }
+        .guide-s {
+          margin-top: -20px;
+        }
+      }
+
+      .hero-in {
+        align-items: start;
+      }
+      .mock-q {
+        min-height: 74px;
+      }
+      .mock #hs {
+        height: 214px;
+        overflow: hidden;
+      }
+      .mock #ht {
+        height: 150px;
+        overflow: hidden;
+      }
+      .tw.g td:first-child {
+        font-family: inherit;
+        color: var(--ink);
+        font-weight: 700;
+        width: 34%;
+      }
+      .tw.g table {
+        min-width: 0;
+      }
+      @media (max-width: 860px) {
+        .mock #hs {
+          height: 230px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip" href="#how">Skip to content</a>
+    <nav class="nav">
+      <div class="wrap nav-in">
+        <a class="logo" href="#top">Text-to-SQL <span>Copilot</span></a>
+        <div class="links">
+          <a href="#why">Why</a><a href="#how">How it works</a
+          ><a href="#try">Try it</a><a href="#db">Database</a
+          ><a href="#safety">Safety</a><a href="#stack">Stack</a
+          ><a href="#learn">Basics</a><a href="#setup">Setup</a>
+        </div>
+        <a
+          class="btn pri sm"
+          href="https://github.com/Bhawni-jha/Text-to-SQL-Analytics-Copilot"
+          target="_blank"
+          rel="noopener"
+          >GitHub</a
+        >
+      </div>
+    </nav>
+
+    <header id="top" class="hero">
+      <div class="wrap hero-in">
+        <div>
+          <p class="eyebrow">No SQL needed</p>
+          <h1>
+            Ask your database anything. <em>Get the answer in seconds.</em>
+          </h1>
+          <p class="lead">
+            Type a question the way you would ask a friend. The Copilot writes
+            the SQL, checks that it is safe, runs it, and shows you a table and
+            a chart. Then it shows you the SQL too, so you learn while you
+            explore.
+          </p>
+          <div class="cta">
+            <a class="btn pri" href="#try">Try the live demo</a
+            ><a class="btn" href="#how">How does it work?</a>
+          </div>
+          <ul class="stats">
+            <li><b>6</b> steps</li>
+            <li><b>3</b> safety layers</li>
+            <li><b>30</b> test questions</li>
+            <li><b>8</b> tables shown</li>
+          </ul>
+        </div>
+        <div class="mock card" aria-label="Animated preview of the app">
+          <div class="mock-bar">
+            <i></i><i></i><i></i><span>API online</span>
+          </div>
+          <label class="tiny">Your question</label>
+          <div class="mock-q" id="hq" aria-live="off"></div>
+          <label class="tiny">Generated SQL</label>
+          <pre class="sql" id="hs"></pre>
+          <div id="ht"></div>
+        </div>
+      </div>
+    </header>
+
+    <section class="guide-s">
+      <div class="wrap">
+        <ol class="guide">
+          <li>
+            <a href="#how"
+              ><b>1</b>Learn the flow<span
+                >6 steps from question to answer</span
+              ></a
+            >
+          </li>
+          <li>
+            <a href="#db"
+              ><b>2</b>Explore the data<span
+                >Click the tables in the schema</span
+              ></a
+            >
+          </li>
+          <li>
+            <a href="#try"
+              ><b>3</b>Run a demo<span
+                >Pick a question, see SQL and chart</span
+              ></a
+            >
+          </li>
+          <li>
+            <a href="#safety"
+              ><b>4</b>Check the safety<span>Why it cannot change data</span></a
+            >
+          </li>
+          <li>
+            <a href="#setup"
+              ><b>5</b>Run it yourself<span>Setup, tests and fixes</span></a
+            >
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="why">
+      <div class="wrap">
+        <p class="eyebrow">Why it matters</p>
+        <h2>Everyone has questions. Few people know SQL.</h2>
+        <p class="lead">
+          Company data lives in databases, and getting an answer usually means
+          writing code. The Copilot removes that wall, and shows you the SQL so
+          you grow your skills as you go.
+        </p>
+        <div class="three">
+          <div class="card">
+            <h3>Anyone can ask</h3>
+            <p>
+              A sales manager, a student or an analyst can ask “Which country
+              buys the most?” and get a table and a chart.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Learn SQL by seeing it</h3>
+            <p>
+              Every answer comes with its SQL. Read it, edit it, run it again,
+              and watch what changes.
+            </p>
+          </div>
+          <div class="card hl">
+            <h3>Safe by default</h3>
+            <p>
+              Queries are checked first and run by a read-only user, so nothing
+              can be deleted or changed.
+            </p>
+          </div>
+        </div>
+        <h3 class="sub">Project at a glance</h3>
+        <div class="tw g">
+          <table>
+            <tbody>
+              <tr>
+                <td>Sample database</td>
+                <td>Northwind (a pretend trading company) on PostgreSQL</td>
+              </tr>
+              <tr>
+                <td>AI model</td>
+                <td>Groq, openai/gpt-oss-120b</td>
+              </tr>
+              <tr>
+                <td>Safety</td>
+                <td>
+                  Read-only database user, read-only transaction, 10 second
+                  timeout, 1000 row limit
+                </td>
+              </tr>
+              <tr>
+                <td>Retry</td>
+                <td>
+                  If a query fails, the error goes back to the AI for one more
+                  try
+                </td>
+              </tr>
+              <tr>
+                <td>Quality check</td>
+                <td>30 test questions with known correct SQL</td>
+              </tr>
+              <tr>
+                <td>Extras</td>
+                <td>
+                  Table selection, query history, accounts, saved views,
+                  connection test
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <h3 class="sub">What you will learn from this project</h3>
+        <ul class="list">
+          <li>
+            <b>AI + databases:</b> how a question becomes SQL with a language
+            model.
+          </li>
+          <li>
+            <b>Schemas:</b> reading tables, primary keys, foreign keys and
+            relationships.
+          </li>
+          <li>
+            <b>Safe SQL:</b> read-only users, validation, timeouts and row
+            limits.
+          </li>
+          <li>
+            <b>Full stack:</b> a FastAPI backend working with a React frontend.
+          </li>
+          <li>
+            <b>Quality:</b> measuring AI accuracy with a set of test questions.
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="how">
+      <div class="wrap">
+        <p class="eyebrow">How it works</p>
+        <h2>From question to answer in 6 simple steps</h2>
+        <p class="lead">
+          No magic, just a clear pipeline. Click each step to see what happens
+          and which file does the work.
+        </p>
+        <div class="how">
+          <div
+            class="step-list"
+            id="steps"
+            role="tablist"
+            aria-label="Steps"
+          ></div>
+          <div class="card step-card" id="stepCard" aria-live="polite"></div>
+        </div>
+        <div class="two">
+          <div class="card">
+            <h3>Without the copilot</h3>
+            <p>
+              You must know SQL, table names and how tables connect. One wrong
+              word and the query fails.
+            </p>
+          </div>
+          <div class="card hl">
+            <h3>With the copilot</h3>
+            <p>
+              You type an everyday question. The app does the SQL work and
+              checks it before running.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="try" class="alt">
+      <div class="wrap">
+        <p class="eyebrow">Try it</p>
+        <h2>See it in action: pick a question</h2>
+        <p class="lead">
+          Tap a question. You get the SQL, a table and a chart, just like in the
+          real app. This demo uses <b>dummy numbers</b>, so it works without a
+          server.
+        </p>
+        <div class="chips" id="chips"></div>
+        <div class="demo">
+          <div class="card">
+            <h3>Generated SQL</h3>
+            <pre class="sql" id="dsql"></pre>
+            <p class="why" id="dwhy"></p>
+          </div>
+          <div class="card">
+            <div class="tabs">
+              <button class="btn sm pri" data-v="table">Table</button
+              ><button class="btn sm" data-v="chart">Chart</button
+              ><span class="tiny">dummy data</span>
+            </div>
+            <div id="dtable"></div>
+            <div class="chart-box" id="dchart" hidden>
+              <canvas id="cv" aria-label="Demo chart" role="img"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="db">
+      <div class="wrap">
+        <p class="eyebrow">Database schema</p>
+        <h2>Meet the data: the Northwind database</h2>
+        <p class="lead">
+          Northwind is a pretend trading company. Hover or click a table to see
+          what it stores and how it connects. <b>PK</b> = primary key (unique
+          ID). <b>FK</b> = foreign key (a link to another table). <b>1</b> to
+          <b>N</b> means one row links to many rows.
+        </p>
+        <div class="schema card">
+          <svg
+            id="svg"
+            viewBox="0 0 1080 560"
+            role="group"
+            aria-label="Database diagram"
+          ></svg>
+        </div>
+        <div class="card panel" id="panel" aria-live="polite"></div>
+        <p class="tiny">
+          The real database has more tables. This diagram shows the 8 that
+          matter most for the demo questions.
+        </p>
+      </div>
+    </section>
+
+    <section id="safety" class="alt">
+      <div class="wrap">
+        <p class="eyebrow">Safety and quality</p>
+        <h2>Safe by design: the AI can read, never change</h2>
+        <div class="three">
+          <div class="card">
+            <b class="num">1</b>
+            <h3>SQL validator</h3>
+            <p>
+              Only one read-only SELECT is allowed. INSERT, UPDATE, DELETE, DROP
+              and similar commands are blocked.
+            </p>
+          </div>
+          <div class="card">
+            <b class="num">2</b>
+            <h3>Read-only user</h3>
+            <p>
+              The database account the app uses has permission to read, and
+              nothing else.
+            </p>
+          </div>
+          <div class="card">
+            <b class="num">3</b>
+            <h3>Limits</h3>
+            <p>
+              A read-only transaction, a 10 second timeout and a 1000 row limit
+              stop heavy or risky queries.
+            </p>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="card">
+            <h3>Try the validator idea</h3>
+            <p class="tiny">
+              A simplified browser version. The real one uses the sqlglot
+              library on the server.
+            </p>
+            <textarea id="chk" rows="4" spellcheck="false">
+SELECT * FROM customers LIMIT 5</textarea
+            >
+            <div class="tabs">
+              <button class="btn sm pri" id="go">Check</button
+              ><button
+                class="btn sm"
+                data-ex="SELECT country, COUNT(*) FROM customers GROUP BY country"
+              >
+                Safe</button
+              ><button class="btn sm" data-ex="DELETE FROM orders">
+                Delete</button
+              ><button class="btn sm" data-ex="SELECT 1; DROP TABLE customers">
+                Two statements
+              </button>
+            </div>
+            <div class="result" id="res" aria-live="polite"></div>
+          </div>
+          <div class="card">
+            <h3>Measuring accuracy</h3>
+            <p class="tiny">
+              The project has 30 test questions with known answers. Each prompt
+              change is scored again. <b>These bars are dummy numbers</b> to
+              show the idea.
+            </p>
+            <div class="chart-box">
+              <canvas
+                id="cq"
+                aria-label="Dummy accuracy chart"
+                role="img"
+              ></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="learn">
+      <div class="wrap">
+        <p class="eyebrow">Beginner basics</p>
+        <h2>New to databases? Start with these words</h2>
+        <div class="terms" id="terms"></div>
+        <h3 class="sub">Anatomy of a SQL query</h3>
+        <p class="tiny">Hover a coloured part.</p>
+        <pre class="sql big" id="anat"></pre>
+        <p class="why" id="anatTip">Hover a part of the query above.</p>
+        <h3 class="sub">What the app can do</h3>
+        <div class="feat" id="feat"></div>
+      </div>
+    </section>
+
+    <section id="stack">
+      <div class="wrap">
+        <p class="eyebrow">Under the hood</p>
+        <h2>Built with popular, industry-standard tools</h2>
+        <div class="feat">
+          <div><b>React (Vite)</b>The web page you click and type in.</div>
+          <div>
+            <b>FastAPI</b>The backend that checks requests and talks to the
+            databases.
+          </div>
+          <div>
+            <b>PostgreSQL</b>The Northwind sample data, plus a separate app
+            database for accounts, history and saved views.
+          </div>
+          <div>
+            <b>Groq (openai/gpt-oss-120b)</b>The AI model that writes the SQL.
+          </div>
+          <div><b>sqlglot</b>Reads the SQL and blocks anything unsafe.</div>
+        </div>
+        <h3 class="sub">Folder map</h3>
+        <pre class="sql">
+Text-to-SQL/
+├── backend/app/
+│   ├── main.py        API routes and startup
+│   ├── config.py      settings from .env
+│   ├── models.py      request and response checks
+│   ├── llm.py         Groq prompt and reply parsing
+│   ├── schema.py      reads table metadata
+│   ├── service.py     question → SQL → validate → run
+│   ├── validator.py   blocks unsafe SQL
+│   ├── runner.py      runs SQL with limits and timeout
+│   ├── history.py     saves and deletes history
+│   ├── auth.py        password hashing, signed sessions
+│   └── dashboard.py   saved views
+├── backend/tests/     eval_set.json, run_eval.py, test_validator.py
+├── database/          01_readonly_user.sql, 02_history_table.sql
+├── frontend/src/      App.jsx, api.js, chart.js, styles.css, components/
+└── docs/              project documentation</pre
+        >
+        <h3 class="sub">API endpoints</h3>
+        <div class="tw">
+          <table>
+            <thead>
+              <tr>
+                <th>Endpoint</th>
+                <th>What it does</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>GET /api/health</td>
+                <td>Check backend status</td>
+              </tr>
+              <tr>
+                <td>GET /api/schema</td>
+                <td>Read available tables and columns</td>
+              </tr>
+              <tr>
+                <td>POST /api/ask</td>
+                <td>Turn a question into SQL and run it</td>
+              </tr>
+              <tr>
+                <td>POST /api/run</td>
+                <td>Validate and run edited SQL</td>
+              </tr>
+              <tr>
+                <td>GET /api/history</td>
+                <td>List history</td>
+              </tr>
+              <tr>
+                <td>DELETE /api/history/{id}</td>
+                <td>Delete one history item</td>
+              </tr>
+              <tr>
+                <td>DELETE /api/history</td>
+                <td>Delete all current history</td>
+              </tr>
+              <tr>
+                <td>POST /api/auth/register</td>
+                <td>Create an account</td>
+              </tr>
+              <tr>
+                <td>POST /api/auth/login</td>
+                <td>Sign in</td>
+              </tr>
+              <tr>
+                <td>GET /api/auth/me</td>
+                <td>Read the current account</td>
+              </tr>
+              <tr>
+                <td>GET /api/dashboards</td>
+                <td>List saved views</td>
+              </tr>
+              <tr>
+                <td>POST /api/dashboards</td>
+                <td>Save a view</td>
+              </tr>
+              <tr>
+                <td>PUT /api/dashboards/{id}</td>
+                <td>Update a view</td>
+              </tr>
+              <tr>
+                <td>DELETE /api/dashboards/{id}</td>
+                <td>Delete a view</td>
+              </tr>
+              <tr>
+                <td>POST /api/connections/test</td>
+                <td>Test a PostgreSQL URL</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="tiny">
+          Open <code>http://127.0.0.1:8000/docs</code> while the backend runs to
+          try these in your browser.
+        </p>
+      </div>
+    </section>
+
+    <section id="setup" class="alt">
+      <div class="wrap">
+        <p class="eyebrow">Run it yourself</p>
+        <h2>Run it on your own computer (Windows)</h2>
+        <p class="lead">
+          You need Python 3.10+, Node.js LTS, PostgreSQL with the northwind
+          database, and a Groq API key.
+        </p>
+        <ol class="setup">
+          <li>
+            <b>Database users and tables</b>
+            <pre data-copy>
+psql -U postgres -d northwind -f database\01_readonly_user.sql
+psql -U postgres -c "CREATE DATABASE myapp_db;"
+psql -U postgres -d myapp_db -f database\02_history_table.sql</pre
+            >
+          </li>
+          <li>
+            <b>Settings:</b> create <code>backend/.env</code> (never share it)
+            <pre data-copy>
+GROQ_API_KEY=your-groq-api-key
+GROQ_MODEL=openai/gpt-oss-120b
+SAMPLE_DB_URL=postgresql://copilot_ro:password@localhost:5432/northwind
+APP_DB_URL=postgresql://postgres:password@localhost:5432/myapp_db
+AUTH_SECRET=a-long-random-secret</pre
+            >
+          </li>
+          <li>
+            <b>Backend</b>
+            <pre data-copy>
+cd backend
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000</pre
+            >
+          </li>
+          <li>
+            <b>Frontend</b> (second terminal)
+            <pre data-copy>
+cd frontend
+npm install
+npm run dev</pre
+            >
+            Then open <code>http://localhost:5173</code>.
+          </li>
+        </ol>
+        <h3 class="sub">Test it</h3>
+        <pre class="cmd" data-copy>
+cd backend
+.\.venv\Scripts\Activate.ps1
+python tests\test_validator.py
+python tests\run_eval.py
+cd ..\frontend
+npm run build</pre
+        >
+        <p class="tiny">
+          test_validator.py checks the safety rules. run_eval.py asks the 30
+          test questions and saves details to backend/tests/eval_results.json.
+          It needs the databases, a Groq key and the backend settings.
+        </p>
+        <h3 class="sub">Questions students ask</h3>
+        <details>
+          <summary>Can it delete or change my data?</summary>
+          <p>
+            No. Queries are checked, then run by a read-only user inside a
+            read-only transaction.
+          </p>
+        </details>
+        <details>
+          <summary>What if the AI writes a wrong query?</summary>
+          <p>
+            If the database returns an error, the error is sent back to the AI
+            for one retry. You can also edit the SQL yourself and run it again.
+          </p>
+        </details>
+        <details>
+          <summary>Why choose only some tables?</summary>
+          <p>
+            A smaller schema means a shorter prompt, so the AI stays focused and
+            makes fewer mistakes.
+          </p>
+        </details>
+        <h3 class="sub">If something goes wrong</h3>
+        <details>
+          <summary>“python is not recognized”</summary>
+          <p>
+            Install Python again and tick “Add Python to PATH” during
+            installation.
+          </p>
+        </details>
+        <details>
+          <summary>PowerShell blocks the virtual environment</summary>
+          <p>
+            Run
+            <code>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</code>,
+            then activate <code>.venv</code> again.
+          </p>
+        </details>
+        <details>
+          <summary>The page says the API is offline</summary>
+          <p>
+            Check that the backend terminal is running
+            <code>uvicorn app.main:app --reload --port 8000</code>.
+          </p>
+        </details>
+        <details>
+          <summary>Database connection failed</summary>
+          <p>
+            Make sure the PostgreSQL service is running, the northwind database
+            exists, and the usernames and passwords in <code>.env</code> are
+            right. <code>SAMPLE_DB_URL</code> must point to the sample database
+            and <code>APP_DB_URL</code> to the app database.
+          </p>
+        </details>
+        <details>
+          <summary>Groq authentication error</summary>
+          <p>
+            Check <code>GROQ_API_KEY</code> in <code>backend/.env</code>, then
+            restart the backend.
+          </p>
+        </details>
+        <details>
+          <summary>The table list is empty</summary>
+          <p>
+            The backend must connect to <code>SAMPLE_DB_URL</code> and the
+            database user must be able to read the schema information.
+          </p>
+        </details>
+        <h3 class="sub">Security notes</h3>
+        <ul class="list">
+          <li>
+            <b>Never share</b> <code>.env</code> files, API keys, database
+            passwords or <code>AUTH_SECRET</code>.
+          </li>
+          <li>
+            Use a long, unique <code>AUTH_SECRET</code> outside local
+            development.
+          </li>
+          <li>Keep the sample database user read-only.</li>
+          <li>Do not expose PostgreSQL directly to the internet.</li>
+          <li>
+            Keep the SQL validator and read-only runner switched on in
+            production.
+          </li>
+        </ul>
+        <h3 class="sub">Ideas to extend the project</h3>
+        <ul class="list">
+          <li>Add automated frontend tests.</li>
+          <li>Add pagination for long history lists.</li>
+          <li>Add role-based access control.</li>
+          <li>
+            Add more evaluation questions and track accuracy after each prompt
+            change.
+          </li>
+          <li>Deploy with a hosted PostgreSQL and FastAPI service.</li>
+        </ul>
+      </div>
+    </section>
+
+    <footer>
+      <div class="wrap">
+        <p>
+          Text-to-SQL Analytics Copilot ·
+          <a
+            href="https://github.com/Bhawni-jha/Text-to-SQL-Analytics-Copilot"
+            target="_blank"
+            rel="noopener"
+            >Like it? See the code and star it on GitHub</a
+          >
+        </p>
+        <p class="tiny">
+          Demo numbers on this page are dummy values for learning.
+        </p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>
+      "use strict";
+      if (typeof Chart !== "undefined") {
+        const cs = getComputedStyle(document.documentElement);
+        Chart.defaults.color = cs.getPropertyValue("--mut").trim();
+        Chart.defaults.borderColor = cs.getPropertyValue("--line").trim();
+      }
+      const $ = (s, r = document) => r.querySelector(s);
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      const esc = (s) =>
+        s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      const KW =
+        /\b(SELECT|FROM|WHERE|GROUP BY|ORDER BY|JOIN|ON|AS|AND|COUNT|SUM|ROUND|EXTRACT|DESC|LIMIT|YEAR|MONTH|DELETE|DROP)\b/g;
+      const hl = (sql) =>
+        esc(sql)
+          .replace(KW, '<b class="k">$1</b>')
+          .replace(/\b(\d+)\b/g, '<span class="n">$1</span>');
+      const tableHTML = (cols, rows) =>
+        "<table><thead><tr>" +
+        cols.map((c) => `<th>${c}</th>`).join("") +
+        "</tr></thead><tbody>" +
+        rows
+          .map(
+            (r) =>
+              "<tr>" +
+              r
+                .map(
+                  (v) =>
+                    `<td class="${typeof v === "number" ? "r" : ""}">${typeof v === "number" ? v.toLocaleString() : v}</td>`,
+                )
+                .join("") +
+              "</tr>",
+          )
+          .join("") +
+        "</tbody></table>";
+
+      /* ---------- Dummy demo data (not real results) ---------- */
+      const REV =
+        "ROUND(SUM(od.unit_price * od.quantity * (1 - od.discount))::numeric, 2)";
+      const DEMOS = [
+        {
+          q: "How many customers are in each country?",
+          type: "bar",
+          sql: "SELECT country, COUNT(*) AS customers\nFROM customers\nGROUP BY country\nORDER BY customers DESC;",
+          why: "Groups the customers by country and counts each group.",
+          cols: ["country", "customers"],
+          rows: [
+            ["USA", 13],
+            ["Germany", 11],
+            ["France", 11],
+            ["Brazil", 9],
+            ["UK", 7],
+            ["Mexico", 5],
+          ],
+        },
+        {
+          q: "Show the number of orders in each month of 1997",
+          type: "line",
+          sql: "SELECT EXTRACT(MONTH FROM order_date) AS month,\n       COUNT(*) AS orders\nFROM orders\nWHERE EXTRACT(YEAR FROM order_date) = 1997\nGROUP BY 1\nORDER BY 1;",
+          why: "Keeps only 1997 orders, then counts them month by month.",
+          cols: ["month", "orders"],
+          rows: [
+            [1, 33],
+            [2, 29],
+            [3, 30],
+            [4, 31],
+            [5, 32],
+            [6, 30],
+            [7, 33],
+            [8, 33],
+            [9, 37],
+            [10, 38],
+            [11, 34],
+            [12, 48],
+          ],
+        },
+      ];
+
+      /* ---------- Hero: typing animation ---------- */
+      async function typeText(el, text, ms) {
+        el.textContent = "";
+        for (const ch of text) {
+          el.textContent += ch;
+          await sleep(ms);
+        }
+      }
+      async function heroLoop() {
+        const q = $("#hq"),
+          s = $("#hs"),
+          t = $("#ht");
+        const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+        for (let i = 0; ; i++) {
+          const d = DEMOS[i % DEMOS.length];
+          s.innerHTML = "";
+          t.innerHTML = "";
+          if (calm) q.textContent = d.q;
+          else await typeText(q, d.q, 28);
+          await sleep(350);
+          s.innerHTML = hl(d.sql);
+          t.innerHTML = tableHTML(d.cols, d.rows.slice(0, 3));
+          if (calm) return;
+          await sleep(3500);
+        }
+      }
+
+      /* ---------- How it works ---------- */
+      const STEPS = [
+        [
+          "Ask in plain English",
+          "You type a question such as “Top 5 customers by total order value”. The React page sends it to the backend. You can also pick only the tables you need.",
+          "frontend/src/App.jsx",
+        ],
+        [
+          "Read the schema",
+          "The backend reads table names, columns, types and keys from PostgreSQL. Only the selected tables are passed on, so the AI sees less and stays focused.",
+          "backend/app/schema.py",
+        ],
+        [
+          "Groq writes the SQL",
+          "The question, the schema and business rules (like how revenue is calculated) go to the Groq model. It replies with one SQL query and a short explanation.",
+          "backend/app/llm.py",
+        ],
+        [
+          "Check the SQL is safe",
+          "The validator uses sqlglot to confirm it is a single read-only SELECT. Anything that could change or delete data is rejected.",
+          "backend/app/validator.py",
+        ],
+        [
+          "Run it safely",
+          "A read-only database user runs it in a read-only transaction with a 10 second timeout and a 1000 row limit. If it fails, the error goes back to the AI for one retry.",
+          "backend/app/runner.py, service.py",
+        ],
+        [
+          "Show the answer",
+          "You see the SQL, a table, and a chart when it makes sense. The question is saved in your history.",
+          "frontend + backend/app/history.py",
+        ],
+      ];
+      function initSteps() {
+        const list = $("#steps"),
+          card = $("#stepCard");
+        const pick = (i) => {
+          [...list.children].forEach((b, k) =>
+            b.setAttribute("aria-selected", k === i),
+          );
+          card.innerHTML = `<p class="eyebrow">Step ${i + 1} of 6</p><h3>${STEPS[i][0]}</h3><p>${STEPS[i][1]}</p><span class="file">${STEPS[i][2]}</span>`;
+        };
+        STEPS.forEach((s, i) => {
+          const b = document.createElement("button");
+          b.setAttribute("role", "tab");
+          b.innerHTML = `<b>${i + 1}</b>${s[0]}`;
+          b.onclick = () => pick(i);
+          list.appendChild(b);
+        });
+        pick(0);
+      }
+
+      /* ---------- Try it (table + chart) ---------- */
+      let chart;
+      const PAL = [
+        "#3766e8",
+        "#f0742e",
+        "#12a594",
+        "#8e44ad",
+        "#e6b800",
+        "#d64545",
+      ];
+      function drawChart(d) {
+        const box = $("#dchart");
+        if (typeof Chart === "undefined") {
+          box.innerHTML =
+            "<p class='tiny'>Charts need an internet connection to load Chart.js.</p>";
+          return;
+        }
+        if (chart) chart.destroy();
+        const many = d.type === "doughnut";
+        chart = new Chart($("#cv"), {
+          type: d.type,
+          data: {
+            labels: d.rows.map((r) => r[0]),
+            datasets: [
+              {
+                label: d.cols[1],
+                data: d.rows.map((r) => r[1]),
+                backgroundColor: many ? PAL : "#3766e8",
+                borderColor: "#3766e8",
+                borderWidth: d.type === "line" ? 3 : 0,
+                tension: 0.3,
+                borderRadius: 6,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: many, position: "bottom" } },
+          },
+        });
+      }
+      function initTry() {
+        const chips = $("#chips");
+        const show = (i) => {
+          const d = DEMOS[i];
+          [...chips.children].forEach((c, k) =>
+            c.setAttribute("aria-pressed", k === i),
+          );
+          $("#dsql").innerHTML = hl(d.sql);
+          $("#dwhy").textContent = d.why;
+          $("#dtable").innerHTML = tableHTML(d.cols, d.rows);
+          drawChart(d);
+        };
+        DEMOS.forEach((d, i) => {
+          const c = document.createElement("button");
+          c.className = "chip";
+          c.textContent = d.q;
+          c.onclick = () => show(i);
+          chips.appendChild(c);
+        });
+        document.querySelectorAll("[data-v]").forEach((b) =>
+          b.addEventListener("click", () => {
+            const chartView = b.dataset.v === "chart";
+            $("#dtable").hidden = chartView;
+            $("#dchart").hidden = !chartView;
+            document
+              .querySelectorAll("[data-v]")
+              .forEach((x) => x.classList.toggle("pri", x === b));
+            if (chartView && chart) chart.resize();
+          }),
+        );
+        show(0);
+      }
+
+      /* ---------- Database schema diagram ---------- */
+      const W = 200;
+      const T = {
+        customers: {
+          x: 20,
+          y: 20,
+          d: "Companies that place orders with Northwind.",
+          ask: "How many customers are in each country?",
+          c: [
+            ["customer_id", "PK"],
+            ["company_name"],
+            ["contact_name"],
+            ["city"],
+            ["country"],
+          ],
+        },
+        employees: {
+          x: 20,
+          y: 215,
+          d: "Staff members who handle the orders.",
+          ask: "Which employee handled the most orders?",
+          c: [
+            ["employee_id", "PK"],
+            ["first_name"],
+            ["last_name"],
+            ["title"],
+            ["hire_date"],
+          ],
+        },
+        shippers: {
+          x: 20,
+          y: 410,
+          d: "Delivery companies that ship the orders.",
+          ask: "What is the average freight cost for each shipping company?",
+          c: [["shipper_id", "PK"], ["company_name"], ["phone"]],
+        },
+        orders: {
+          x: 300,
+          y: 170,
+          d: "One row per order: who bought, who handled it, when, and how it was shipped.",
+          ask: "How many orders were shipped to Germany?",
+          c: [
+            ["order_id", "PK"],
+            ["customer_id", "FK"],
+            ["employee_id", "FK"],
+            ["order_date"],
+            ["ship_via", "FK"],
+            ["freight"],
+            ["ship_country"],
+          ],
+        },
+        order_details: {
+          x: 580,
+          y: 200,
+          d: "The items inside each order: which product, how many, at what price and discount.",
+          ask: "What is the total quantity of Chai that has been ordered?",
+          c: [
+            ["order_id", "PK FK"],
+            ["product_id", "PK FK"],
+            ["unit_price"],
+            ["quantity"],
+            ["discount"],
+          ],
+        },
+        categories: {
+          x: 860,
+          y: 20,
+          d: "Groups of products, such as Beverages or Seafood.",
+          ask: "How many products are in each category?",
+          c: [["category_id", "PK"], ["category_name"], ["description"]],
+        },
+        products: {
+          x: 860,
+          y: 190,
+          d: "The things Northwind sells.",
+          ask: "Show the 5 most expensive products.",
+          c: [
+            ["product_id", "PK"],
+            ["product_name"],
+            ["supplier_id", "FK"],
+            ["category_id", "FK"],
+            ["unit_price"],
+            ["discontinued"],
+          ],
+        },
+        suppliers: {
+          x: 860,
+          y: 430,
+          d: "Companies that supply the products.",
+          ask: "How many suppliers are there in each country?",
+          c: [["supplier_id", "PK"], ["company_name"], ["country"]],
+        },
+      };
+      // [one side (parent), many side (child), linking column]
+      const RELS = [
+        ["customers", "orders", "customer_id"],
+        ["employees", "orders", "employee_id"],
+        ["shippers", "orders", "ship_via"],
+        ["orders", "order_details", "order_id"],
+        ["products", "order_details", "product_id"],
+        ["categories", "products", "category_id"],
+        ["suppliers", "products", "supplier_id"],
+      ];
+      const NS = "http://www.w3.org/2000/svg";
+      const mk = (tag, attrs = {}, parent, text) => {
+        const e = document.createElementNS(NS, tag);
+        for (const k in attrs) e.setAttribute(k, attrs[k]);
+        if (text) e.textContent = text;
+        if (parent) parent.appendChild(e);
+        return e;
+      };
+      const H = (t) => 36 + T[t].c.length * 22 + 10;
+
+      function edge(a, b) {
+        const A = T[a],
+          B = T[b],
+          ah = H(a),
+          bh = H(b);
+        if (A.x + W <= B.x)
+          return [A.x + W, A.y + ah / 2, B.x, B.y + bh / 2, "h"];
+        if (B.x + W <= A.x)
+          return [A.x, A.y + ah / 2, B.x + W, B.y + bh / 2, "h"];
+        if (A.y + ah <= B.y)
+          return [A.x + W / 2, A.y + ah, B.x + W / 2, B.y, "v"];
+        return [A.x + W / 2, A.y, B.x + W / 2, B.y + bh, "v"];
+      }
+      function initSchema() {
+        const svg = $("#svg"),
+          lines = mk("g", {}, svg),
+          boxes = mk("g", {}, svg),
+          els = {};
+        RELS.forEach(([p, c, col]) => {
+          const [x1, y1, x2, y2, dir] = edge(p, c),
+            g = mk("g", { "data-a": p, "data-b": c }, lines);
+          const m = (x2 - x1) / 2;
+          mk(
+            "path",
+            {
+              class: "ln",
+              d:
+                dir === "h"
+                  ? `M${x1} ${y1} C${x1 + m} ${y1} ${x2 - m} ${y2} ${x2} ${y2}`
+                  : `M${x1} ${y1} L${x2} ${y2}`,
+            },
+            g,
+          );
+          const sx = x2 > x1 ? 1 : -1,
+            sy = y2 > y1 ? 1 : -1;
+          if (dir === "h") {
+            mk(
+              "text",
+              { class: "card_n", x: x1 + sx * 12 - 4, y: y1 - 8 },
+              g,
+              "1",
+            );
+            mk(
+              "text",
+              { class: "card_n", x: x2 - sx * 12 - 4, y: y2 - 8 },
+              g,
+              "N",
+            );
+          } else {
+            mk("text", { class: "card_n", x: x1 + 8, y: y1 + sy * 16 }, g, "1");
+            mk("text", { class: "card_n", x: x2 + 8, y: y2 - sy * 8 }, g, "N");
+          }
+          mk(
+            "text",
+            { class: "lb", x: (x1 + x2) / 2 - 30, y: (y1 + y2) / 2 - 8 },
+            g,
+            col,
+          );
+        });
+        Object.keys(T).forEach((name) => {
+          const t = T[name],
+            g = mk(
+              "g",
+              {
+                class: "tb",
+                tabindex: 0,
+                role: "button",
+                "aria-label": `${name} table`,
+                transform: `translate(${t.x},${t.y})`,
+              },
+              boxes,
+            );
+          mk("rect", { class: "b", width: W, height: H(name), rx: 10 }, g);
+          mk("rect", { class: "h", width: W, height: 32, rx: 10 }, g);
+          mk("text", { class: "t", x: 12, y: 21 }, g, name);
+          t.c.forEach(([n, f], i) => {
+            const y = 54 + i * 22;
+            if (f)
+              mk(
+                "text",
+                { class: f.includes("PK") ? "pk" : "fk", x: 12, y },
+                g,
+                f,
+              );
+            mk("text", { x: f ? 12 + f.length * 8 + 6 : 12, y }, g, n);
+          });
+          g.onmouseenter = () => focusT(name);
+          g.onfocus = () => focusT(name);
+          g.onclick = () => focusT(name);
+          g.onkeydown = (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              focusT(name);
+            }
+          };
+          els[name] = g;
+        });
+        function focusT(name) {
+          const t = T[name];
+          Object.entries(els).forEach(([k, g]) =>
+            g.classList.toggle("sel", k === name),
+          );
+          lines.querySelectorAll("g").forEach((g) => {
+            const on = g.dataset.a === name || g.dataset.b === name;
+            g.firstChild.classList.toggle("on", on);
+            g.classList.toggle("dim", !on);
+          });
+          const links = RELS.filter((r) => r[0] === name || r[1] === name).map(
+            (r) =>
+              r[0] === name
+                ? `1 ${name} → many ${r[1]} (via <code>${r[2]}</code>)`
+                : `many ${name} → 1 ${r[0]} (via <code>${r[2]}</code>)`,
+          );
+          $("#panel").innerHTML =
+            `<h3>${name}</h3><p>${t.d}</p><div class="cols">${t.c.map(([n, f]) => `<span>${f ? `<b>${f}</b>` : ""}${n}</span>`).join("")}</div>` +
+            `<p><b>Connected to:</b></p><ul>${links.map((l) => `<li>${l}</li>`).join("")}</ul><p class="tiny">Try asking: “${t.ask}”</p>`;
+        }
+        focusT("orders");
+      }
+
+      /* ---------- Safety checker (simplified demo of the validator) ---------- */
+      function check(sql) {
+        const s = sql.trim().replace(/;+\s*$/, "");
+        if (!s) return [false, "The query is empty."];
+        if (s.includes(";"))
+          return [false, "Blocked: only one statement is allowed."];
+        if (!/^(select|with)\b/i.test(s))
+          return [false, "Blocked: only SELECT queries are allowed."];
+        const bad = s.match(
+          /\b(insert|update|delete|drop|alter|create|truncate|grant|copy|into)\b/i,
+        );
+        if (bad)
+          return [false, `Blocked: “${bad[0].toUpperCase()}” can change data.`];
+        if (/for\s+update/i.test(s))
+          return [false, "Blocked: locking queries are not allowed."];
+        if (/pg_sleep|pg_read_file|dblink/i.test(s))
+          return [false, "Blocked: this function is not allowed."];
+        return [
+          true,
+          "Allowed: one read-only SELECT. It would now run with a timeout and a row limit.",
+        ];
+      }
+      function initSafety() {
+        const run = () => {
+          const [ok, msg] = check($("#chk").value);
+          const r = $("#res");
+          r.className = "result " + (ok ? "ok" : "bad");
+          r.textContent = msg;
+        };
+        $("#go").onclick = run;
+        document.querySelectorAll("[data-ex]").forEach(
+          (b) =>
+            (b.onclick = () => {
+              $("#chk").value = b.dataset.ex;
+              run();
+            }),
+        );
+        run();
+        if (typeof Chart !== "undefined")
+          new Chart($("#cq"), {
+            type: "bar",
+            data: {
+              labels: ["Counting", "Grouping", "Joins", "Dates"],
+              datasets: [
+                {
+                  label: "Before tuning (dummy)",
+                  data: [70, 60, 45, 40],
+                  backgroundColor: "#c7d2f5",
+                  borderRadius: 6,
+                },
+                {
+                  label: "After tuning (dummy)",
+                  data: [95, 90, 75, 70],
+                  backgroundColor: "#3766e8",
+                  borderRadius: 6,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                y: { max: 100, title: { display: true, text: "% correct" } },
+              },
+              plugins: { legend: { position: "bottom" } },
+            },
+          });
+      }
+
+      /* ---------- Basics ---------- */
+      const TERMS = [
+        ["Database", "An organized collection of information."],
+        ["Table", "A spreadsheet-like group of related records."],
+        ["Column", "One type of information in a table."],
+        ["Row", "One record in a table."],
+        ["SQL", "The language used to ask a database for information."],
+        ["PostgreSQL", "The database software used by this project."],
+        ["API", "A backend address the frontend can call."],
+        ["Frontend", "The web page a user interacts with."],
+        [
+          "Backend",
+          "The server that validates requests and talks to databases.",
+        ],
+        ["Schema", "A description of tables, columns and relationships."],
+        ["Primary key", "A unique identifier for a row."],
+        ["Foreign key", "A column that connects one table to another."],
+      ];
+      const FEATS = [
+        [
+          "Plain-English questions",
+          "Type your own or use the example chips. Ctrl + Enter sends it.",
+        ],
+        ["Data scope", "Pick only the tables you need before asking."],
+        [
+          "Editable SQL",
+          "Change the SQL and run it again. Safety checks still apply.",
+        ],
+        ["Charts", "Bar and line charts appear when the result fits."],
+        ["History", "Reopen, delete one, or clear all past questions."],
+        ["Accounts", "Local sign-up. Passwords are stored as PBKDF2 hashes."],
+        ["Saved views", "Save a question, its SQL and table scope."],
+        [
+          "Connection test",
+          "Test a PostgreSQL URL without saving the credentials.",
+        ],
+      ];
+      const ANAT = [
+        ["SELECT", "SELECT: which columns you want to see."],
+        [
+          "country, COUNT(*) AS customers",
+          "The columns to show. COUNT(*) counts rows; AS gives the result a name.",
+        ],
+        ["FROM customers", "FROM: which table the data comes from."],
+        [
+          "WHERE country <> 'USA'",
+          "WHERE: keep only rows that match a condition.",
+        ],
+        [
+          "GROUP BY country",
+          "GROUP BY: put rows with the same country into one group.",
+        ],
+        [
+          "ORDER BY customers DESC",
+          "ORDER BY: sort the result. DESC means biggest first.",
+        ],
+        ["LIMIT 5", "LIMIT: show only the first 5 rows."],
+      ];
+      function initBasics() {
+        $("#terms").innerHTML = TERMS.map(
+          ([a, b]) => `<div><b>${a}</b>${b}</div>`,
+        ).join("");
+        $("#feat").innerHTML = FEATS.map(
+          ([a, b]) => `<div><b>${a}</b>${b}</div>`,
+        ).join("");
+        $("#anat").innerHTML = ANAT.map(
+          ([code, tip], i) =>
+            `<span data-t="${esc(tip)}" tabindex="0">${hl(code)}</span>`,
+        ).join("\n");
+        const tip = $("#anatTip");
+        document.querySelectorAll("#anat [data-t]").forEach((s) => {
+          const f = () => (tip.textContent = s.dataset.t);
+          s.onmouseenter = f;
+          s.onfocus = f;
+        });
+        document.querySelectorAll("pre[data-copy]").forEach(
+          (p) =>
+            (p.onclick = async () => {
+              try {
+                await navigator.clipboard.writeText(p.textContent);
+                p.classList.add("copied");
+                setTimeout(() => p.classList.remove("copied"), 1200);
+              } catch (e) {
+                /* clipboard blocked */
+              }
+            }),
+        );
+      }
+
+      initSteps();
+      initTry();
+      initSchema();
+      initSafety();
+      initBasics();
+      heroLoop();
+    </script>
+  </body>
+</html>

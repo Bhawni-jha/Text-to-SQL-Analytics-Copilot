@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+  <style>
+    text { font-family: Arial, sans-serif; fill: #1d2739; }
+    .title { font-size: 26px; font-weight: 700; }
+    .subtitle { font-size: 14px; fill: #68758a; }
+    .table { fill: #ffffff; stroke: #3867e8; stroke-width: 2; rx: 10; }
+    .head { fill: #3867e8; }
+    .head-text { fill: #ffffff; font-size: 15px; font-weight: 700; }
+    .field { font-size: 12px; }
+    .key { fill: #e77843; font-weight: 700; }
+    .relation { stroke: #9aa8c2; stroke-width: 2; fill: none; }
+    .relation-label { font-size: 11px; fill: #68758a; }
+  </style>
+  <text x="40" y="42" class="title">Northwind database overview</text>
+  <text x="40" y="67" class="subtitle">The sample PostgreSQL database used by the Text-to-SQL Copilot</text>
+
+  <path class="relation" d="M225 190 L385 190 L385 142 L540 142"/>
+  <path class="relation" d="M225 245 L385 245 L385 280 L540 280"/>
+  <path class="relation" d="M700 142 L820 142 L820 190 L955 190"/>
+  <path class="relation" d="M700 280 L820 280 L820 245 L955 245"/>
+  <path class="relation" d="M700 350 L820 350 L820 300 L955 300"/>
+  <path class="relation" d="M700 415 L820 415 L820 355 L955 355"/>
+  <path class="relation" d="M700 485 L820 485 L820 410 L955 410"/>
+  <text x="390" y="130" class="relation-label">category_id</text>
+  <text x="390" y="272" class="relation-label">customer_id</text>
+  <text x="825" y="180" class="relation-label">product_id</text>
+  <text x="825" y="270" class="relation-label">order_id</text>
+
+  <rect x="50" y="130" width="175" height="145" class="table"/>
+  <rect x="50" y="130" width="175" height="32" class="head"/>
+  <text x="68" y="151" class="head-text">categories</text>
+  <text x="68" y="184" class="field key">PK category_id</text>
+  <text x="68" y="205" class="field">category_name</text>
+  <text x="68" y="226" class="field">description</text>
+  <text x="68" y="247" class="field">picture</text>
+
+  <rect x="50" y="335" width="175" height="145" class="table"/>
+  <rect x="50" y="335" width="175" height="32" class="head"/>
+  <text x="68" y="356" class="head-text">customers</text>
+  <text x="68" y="389" class="field key">PK customer_id</text>
+  <text x="68" y="410" class="field">company_name</text>
+  <text x="68" y="431" class="field">contact_name</text>
+  <text x="68" y="452" class="field">country</text>
+
+  <rect x="540" y="100" width="160" height="115" class="table"/>
+  <rect x="540" y="100" width="160" height="32" class="head"/>
+  <text x="558" y="121" class="head-text">products</text>
+  <text x="558" y="154" class="field key">PK product_id</text>
+  <text x="558" y="175" class="field">product_name</text>
+  <text x="558" y="196" class="field">unit_price</text>
+
+  <rect x="540" y="250" width="160" height="115" class="table"/>
+  <rect x="540" y="250" width="160" height="32" class="head"/>
+  <text x="558" y="271" class="head-text">orders</text>
+  <text x="558" y="304" class="field key">PK order_id</text>
+  <text x="558" y="325" class="field">customer_id</text>
+  <text x="558" y="346" class="field">order_date</text>
+
+  <rect x="540" y="400" width="160" height="115" class="table"/>
+  <rect x="540" y="400" width="160" height="32" class="head"/>
+  <text x="558" y="421" class="head-text">order_details</text>
+  <text x="558" y="454" class="field key">PK order_id</text>
+  <text x="558" y="475" class="field key">PK product_id</text>
+  <text x="558" y="496" class="field">quantity</text>
+
+  <rect x="955" y="145" width="190" height="115" class="table"/>
+  <rect x="955" y="145" width="190" height="32" class="head"/>
+  <text x="973" y="166" class="head-text">employees</text>
+  <text x="973" y="199" class="field key">PK employee_id</text>
+  <text x="973" y="220" class="field">first_name</text>
+  <text x="973" y="241" class="field">last_name</text>
+
+  <rect x="955" y="285" width="190" height="115" class="table"/>
+  <rect x="955" y="285" width="190" height="32" class="head"/>
+  <text x="973" y="306" class="head-text">shippers</text>
+  <text x="973" y="339" class="field key">PK shipper_id</text>
+  <text x="973" y="360" class="field">company_name</text>
+  <text x="973" y="381" class="field">phone</text>
+
+  <rect x="955" y="425" width="190" height="115" class="table"/>
+  <rect x="955" y="425" width="190" height="32" class="head"/>
+  <text x="973" y="446" class="head-text">suppliers</text>
+  <text x="973" y="479" class="field key">PK supplier_id</text>
+  <text x="973" y="500" class="field">company_name</text>
+  <text x="973" y="521" class="field">country</text>
+
+  <text x="50" y="610" class="subtitle">PK = primary key. Foreign-key relationships connect customers, orders, products, categories, employees, and shippers.</text>
+</svg>
